@@ -1,14 +1,8 @@
 # btps - bitcoin puzzle solver
 
----
-
 ### 什么是比特币谜题
 
-由`saatoshi_rising`创建的，旨在衡量社区破解能力，共计160个谜题，包含 ～1000 BTC 的奖金回报。
-
-所谓谜题，就是要破解出地址所对应的私钥，一旦破解出私钥，就可以把地址中的 BTC 转走作为破解的奖励，谜题列表如下：
-
-目前社区已经破解出 83 个谜题，最近一次是在 2026-07-28，#135谜题由 `RetiredCoder` 破解成功，获得 13.5 BTC 奖金。（他用了 200 块GPU，耗时5个月）
+所谓谜题，就是要破解出地址所对应的私钥，一旦掌握了私钥，就可以把地址中的 BTC 转走作为破解的奖励。**比特币谜题**是由`saatoshi_rising`创建的，旨在衡量社区破解能力，共计 160 道谜题，包含 ～1000 BTC 奖金回报。谜题列表如下：
 
 ```
   #              Address                              private key
@@ -175,19 +169,21 @@
 160:1NBC8uXJy1GiJ6drkiZa1WuKn51ps7EPTv
 ```
 
+截止目前社区已经破解出 83 道谜题，最近一次是在 2026-07-28，#135 谜题由 `RetiredCoder` 成功破解，获得 13.5 BTC 奖金。（他用了 200 块GPU，耗时 5 个月）
+
 **谜题有如下规律：**
 
-+ #1谜题，私钥是1 bit
++ #1 谜题，私钥是 1 bit
 
-+ #2谜题，私钥是2 bits，首位为1
++ #2 谜题，私钥是 2 bits，首位为 1
 
-+ #3谜题，私钥是3 bits，首位为1
++ #3 谜题，私钥是 3 bits，首位为 1
 
 + ......
 
-+ #71谜题，私钥71 bits，首位为1，破解回报 7.1 BTC
++ #71 谜题，私钥 71 bits，首位为 1，破解回报 7.1 BTC
 
-+ #72谜题，私钥72 bits，首位为1，破解回报 7.2 BTC
++ #72 谜题，私钥 72 bits，首位为 1，破解回报 7.2 BTC
 
 + ......
 
@@ -203,19 +199,86 @@
 > 
 > $$
 > \begin{aligned}
-\mathbf{Private Key} \times G &\rightarrow \mathbf{PublicKey} \\
-\mathbf{SHA256(PublicKey)} &\rightarrow \mathbf{256Hash} \\
-\mathbf{RIPEMD160(256Hash)} &\rightarrow \mathbf{160Hash} \\
-\mathbf{Base58Check(01||160Hash)} &\rightarrow \mathbf{P2PKH \ Address} \\
+PrivateKey \times G &\rightarrow PublicKey \\
+SHA256(PublicKey) &\rightarrow 256Hash \\
+RIPEMD160(256Hash) &\rightarrow 160Hash \\
+Base58Check(01 \parallel 160Hash) &\rightarrow P2PKH \ Address \\
 \end{aligned}
 > $$
 > 
-> 最开始`saatoshi_rising` 创建了256个谜题，每个谜题 `0.01 * Length(PrivateKey) BTC`
+> 最开始`saatoshi_rising` 创建了 256 道谜题，每道谜题 `0.01 * Length(PrivateKey) BTC`
 > 
 > [TXID: 08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15](https://mempool.space/tx/08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15)
 > 
-> 有人提醒了他，RIPEM160的结果只有160 bits，即使 #256 也只需要 $2^{160}$ 次暴力破解。于是他把 160 - 256 谜题奖金，转入到前160个谜题中，并且增加了奖金，使未破解谜题达到  `0.1 * Length(PrivateKey) BTC`
+> 有人提醒了他，RIPEM160 的结果只有 160 bits，即使 #256 也只需要 $2^{160}$ 次暴力破解。于是他把 161 - 256 谜题奖金，转入到前 160 谜题中，并且增加了奖金，使未破解谜题达到  `0.1 * Length(PrivateKey) BTC`
 > 
 > [TXID: 5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164](https://mempool.space/tx/5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164)
 
----
+### 关于 BTPS
+
+btps 致力于破解未公布公钥的谜题（当前是 #71），公布公钥的谜题采用 idlp 破解（#140 我正在调试中）。用法如下：
+
+```
+Usage: btps [options] taskfile
+ Opts:
+   -h        Print Help (this message) and exit
+   -i <N>    Use the specified CUDA device index
+   -j <N>    Set the concurrent CUDA threads count
+   -l        List available CUDA devices
+   -s        Query CUDA devices status
+```
+
+按 `ctrl+c` 可以保存破解进度，然后退出
+
+```
+btps - bitcoin puzzle#48 solver 1.3.2026.0909 (compiled Sep 12 2026 13:15:06)
+
+[I]: the puzzle is 0x8661CB56D9DF0A61F01328B55AF7E56A3FE7A2B2
+[I]: the puzzle within [0x800000000000, 0xFFFFFFFFFFFF]
+[I]: total expected to perform 0x400000000000 group operations to solve the puzzle
+[I]: the task will using 899.55M CUDA memory
+[I]: the task will using 28672 CUDA threads, organized into grid(112x256)
+[I]: the task will perform 0x100000000 group operations
+[I]: solving progress |██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░| 21.88%, 338.12M/s, 42°C ^C
+[I]: program is exiting, please wait a moment
+```
+
+当前版本利用 NVIDIA 显卡加速破解过程（Apple Silicon 暂时没有计划，后续等我空闲了可能会开发一个）
+
+**硬件方面：** 需要 `Compute Capability 6.0` 及其以上版本的显卡
+
+> 通过 `nvidia-smi --query-gpu=name,compute_cap --format=csv`  命令可以查询显卡的 `Compute Capability`
+> 
+> 或者通过下面网址查询显卡型号对应的 `Compute Capability`
+> 
+> - [Legacy CUDA GPU Compute Capability | NVIDIA Developer](https://developer.nvidia.com/cuda/gpus/legacy)
+> 
+> - [CUDA GPU Compute Capability | NVIDIA Developer](https://developer.nvidia.com/cuda/gpus)
+
+**软件方面：** 
+
+- Windows 上需要 `CUDA 12.8` 及以上版本
+
+- Ubuntu 上需要 `CUDA 12.8` 及以上版本
+
+> 通过 `nvidia-smi` 命令可以查询当前已安装 NVIDIA 驱动支持的最大 CUDA 版本，如果版本不足请升级NVIDIA 驱动
+> 
+> 可以通过下面网址查询最低的显卡驱动版本要求
+> 
+> + [Minor Version Compatibility | NVIDIA Docs](https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html)
+
+**与同类应用相比**
+
+- 全新的代码，没有同类应用中，椭圆曲线大整数运算时有概率会算错的问题
+
+- 针对 `Compute Capability 7.5 (Turing)` 架构做了深度优化
+  
+  - 我用的显卡是 `Turing` 架构，其他架构可能也会快一些，但没环境我不确定
+
+- 不联网，脱机运行，规避联网获取**解算区间**的需求，更适合内网环境
+  
+  - 联系 xbtps@outlook.com 获取 taskfile
+
+### 快速验证
+
+`poc` 目录下存放的是 #48 谜题的破解程序，用于快速验证显卡兼容性和性能。两个版本（`标准版`和 `Turing版` ）都可以跑一遍试试，很快就能跑完。哪个版本快后续就用对应版本就好了。
