@@ -19,3 +19,7 @@
 [+] double default grid size
 [*] fix inaccurate real-time speed at completion
 [*] fix failure to replace existing read-only backup files on windows
+
+1.4 (2026.0918)
+--------------------------------
+[*] fix integer overflow when using more than 4GB CUDA memory
