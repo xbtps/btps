@@ -23,3 +23,8 @@
 1.4 (2026.0918)
 --------------------------------
 [*] fix integer overflow when using more than 4GB CUDA memory
+
+1.5 (2025.1101)
+--------------------------------
+[*] optimize progressbar output
+[*] enable virtual terminal under Windows console
