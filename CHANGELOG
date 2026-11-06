@@ -28,3 +28,8 @@
 --------------------------------
 [*] optimize progressbar output
 [*] enable virtual terminal under Windows console
+
+1.6 (2025.1105)
+--------------------------------
+[*] optimize cpu occupancy rate
+
